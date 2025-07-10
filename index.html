@@ -17,33 +17,52 @@
     #modelCanvas {
       top: 0;
       left: 0;
-      width: 100vw;
-      height: 100vh;
+      width: 100%;
+      height: 80%;
       z-index: 0;
       pointer-events: all;
     }
 
     .bg {
-      min-height: 100vh;
-      padding: 3em 2em;
+      min-height: 100%;
       display: flex;
       flex-direction: column;
       gap: 2em;
       position: relative;
       z-index: 1;
+      background: linear-gradient(moccasin 0%, white 25%);
+      align-items: center;
+      margin-top: -30vh;
+      padding-bottom: 50px;
+
     }
 
     .panel {
-      background: rgba(255, 255, 255, 0.85);
-      padding: 1.5em;
+      background: rgba(255, 255, 255, 1);
+      padding: 1.5em 4em;
       border-radius: 12px;
-      max-width: 700px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      width: 700px;
+    }
+    .panel-top {
+      padding: 1.5em 4em 2.5em 4em;
+      border-radius: 23px;
+      box-shadow: #8c66116e 0px 72px 120px;
+    }
+    @media only screen and (max-width: 700px) {
+      .panel {
+          width: 100%;
+          padding: 1.5em;
+      }
+      .bg{
+            padding: 0 2.5em;
+            padding-bottom: 50px;
+      }
     }
 
     h1 {
       font-size: 2em;
       color: #222;
+      text-align: center;
     }
 
     h2 {
@@ -78,10 +97,41 @@
     }
 
     button:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
+      opacity: 0.5;
+      cursor: not-allowed;
+  }
+
+    #fragenContainer {
+      display: block;
+      padding: 20px;
+      /* background: antiquewhite; */
+      border: 2px solid antiquewhite;
+      border-radius: 8px;
+      margin-top: 40px;
     }
-  </style>
+
+    .divider {
+      border-bottom: 2px solid #faebd7;
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+    }
+
+    .solution {
+      border: 2px solid #ffb200;
+      border-radius: 4px;
+      background: antiquewhite;
+      padding: 8px;
+    }
+
+    .vertical-line {
+      width: 2px;
+      height: 100px;
+      background-color: black;
+      margin: 20px auto; /* zentriert horizontal */
+    }
+
+
+</style>
 <script type="importmap">
 {
   "imports": {
@@ -95,36 +145,65 @@
   <canvas id="modelCanvas"></canvas>
 
   <div class="bg">
-    <div class="panel">
-      <h1>Escape Game</h1>
-      <audio id="audio" src="audio.mp3"></audio>
-      <button id="playBtn">▶️ Audio abspielen</button>
+    <div class="panel panel-top">
+      <h1>Eine Botschaft an euch</h1>
+      <audio controls style="width:100%;">
+        <source src="assets/audio.mp3" type="audio/mpeg" >
+        Your browser does not support the audio element.
+      </audio>
     </div>
+    
+    <h1 style="padding-top: 140px; margin-bottom: -10px;">Tipps</h1>
+    <p style="max-width: 700px; text-align: center;">Wenn ihr nicht weiter wisst findet ihr hier hilfreiche Tipps um das Spiel zu lösen,<br> oder falls es garnicht klappt auch die Antwort.
+      Viel Spaß!</p>
 
     <div class="panel">
       <h2>Erstes Rätsel</h2>
-      <button onclick="showHint('r1', 0)">Hinweis anzeigen</button>
-      <div class="hint" id="r1_0">1. Schau dir die Muster genau an, findest du sie noch wo anders?</div>
-      <div class="hint" id="r1_1">2. Das Spiralmuster ist ein Punkt, die Schlangenlinie ein Strich. Kannst du damit die geheime Botschaft dekodieren?</div>
-      <div class="hint" id="r1_2">3. Die Muster auf dem Teppich sind ein Morsecode</div>
-      <div class="hint" id="r1_3">4. Der Code ist • - (A) - • - • (C) • • • • (H) - (T) = 8</div>
+      <button onclick="showHint(event, 'r1', 0)">Tipp anzeigen</button>
+      <div class="hint" id="r1_0">Schau dir die Muster genau an, findest du sie noch wo anders?</div>
+      <div class="hint" id="r1_1">Das Spiralmuster ist ein Punkt, die Schlangenlinie ein Strich. Kannst du damit die geheime Botschaft dekodieren?</div>
+      <div class="hint" id="r1_2">Die Muster auf dem Teppich sind ein Morsecode</div>
+      <div class="hint solution" id="r1_3"><span>Lösung: Der Code ist • – (A) – • – • (C) • • • • (H) – (T) = 8</span></div>
     </div>
 
     <div class="panel">
       <h2>Zweites Rätsel</h2>
-      <button onclick="showHint('r2', 0)">Hinweis anzeigen</button>
-      <div class="hint" id="r2_0">1. Der Satz „Wenn man all das zusammenzählt“ ist nicht zufällig hervorgehoben, eine Rechenaufgabe bei der du die versteckten Rechenoperationen im Text finden musst.</div>
-      <div class="hint" id="r2_1">2. (((( 2 + 1) - 7 ) + 4 ) / 4 ) + 2 = 2</div>
+      <button onclick="showHint(event, 'r2', 0)">Tipp anzeigen</button>
+      <div class="hint" id="r2_0">Der Satz „Wenn man all das zusammenzählt“ ist nicht zufällig hervorgehoben, eine Rechenaufgabe bei der du die versteckten Rechenoperationen im Text finden musst.</div>
+      <div class="hint solution" id="r2_1">(((( 2 + 1) - 7 ) + 4 ) / 4 ) + 2 = 2</div>
     </div>
 
     <div class="panel">
       <h2>Drittes Rätsel</h2>
-      <button onclick="showHint('r3', 0)">Hinweis anzeigen</button>
-      <div class="hint" id="r3_0">a1. Es gibt auch Herzen die sich nicht auf dem Würfel befinden</div>
-      <div class="hint" id="r3_1">a2. 5</div>
-      <div class="hint" id="r3_2">b. 6</div>
-      <div class="hint" id="r3_3">c. 3</div>
-      <div class="hint" id="r3_4">d. 2</div>
+      <button onclick="showHint(event, 'r3', 0)">Tipp anzeigen</button>
+      <div class="hint" id="r3_0">Verschiedene Fragen scheinen euch hier auf den richtigen Weg zu führen</div>
+      <div class="hint" id="r3_1">Achtet auf das Layout der Karte, kommt es euch bekannt vor?</div>
+      <div class="hint" id="r3_2">Die Fragen sind mit den Punkten auf der Landkarte verbunden</div>
+      <div class="hint" id="r3_3">Verbindet die Punkte miteinander</div>
+      <div class="hint solution" id="r3_4">Wenn man die Punkte 5-6-3-2 verbindet ergibt sich die Ziffer 4</div>
+
+      <div id="fragenContainer" style="display: none;">
+        <div class="divider">
+          <button onclick="showHint(event, 'r4', 0)">Frage 1 - Tipp anzeigen</button>
+          <div class="hint" id="r4_0">Es geht wirklich um die Herz-Symbole welche man erkennen kann, nicht abstrakt wie zB. das Herz einer Katze</div>
+          <div class="hint" id="r4_1">Es gibt auch Herzen die sich nicht auf dem Würfel befinden</div>
+          <div class="hint solution" id="r4_2">2 beim Flugzeug, 1 auf der Wand, 2 auf dem Brief = 5 Herzen</div>
+        </div>
+        <div class="divider">
+          <button onclick="showHint(event, 'r5', 0)">Frage 2 - Lösung anzeigen</button>
+          <div class="hint solution" id="r5_0">Es gibt 6 Katzen: Im Cargobike, auf dem Dach, im Baum, auf dem Balkon, auf der Straße, auf der Treppe</div>
+        </div>
+        <div class="divider">
+          <button onclick="showHint(event, 'r6', 0)">Frage 3 - Lösung anzeigen</button>
+          <div class="hint solution" id="r6_0">3x, zumindest soweit uns bekannt ist (2x von uns, 1x von Sarah & Benni)</div>
+        </div>
+        <div>
+          <button onclick="showHint(event, 'r7', 0)">Frage 4 - Tipp anzeigen</button>
+          <div class="hint" id="r7_0">Vielleicht holt ihr besser die Lupe vom MicroMakro Spiel raus, die Zahl ist sehr klein</div>
+          <div class="hint solution" id="r7_1">Es ist Hausnummer 12, also ist die Antwort 2</div>
+        </div>
+      </div>
+
     </div>
   </div>
 <script type="module">
@@ -175,7 +254,7 @@
     })
   );
   shadowPlane.rotation.x = -Math.PI / 2;
-  shadowPlane.position.y = -1;
+  shadowPlane.position.y = -0.25;
   scene.add(shadowPlane);
 
   // OrbitControls
@@ -190,7 +269,10 @@
   loader.load('assets/model.gltf', function (gltf) {
     model = gltf.scene;
     model.scale.set(0.6, 0.6, 0.6);
-    model.position.set(0, 0.2, 0);
+    model.position.set(0, 0.7, 0);
+    model.rotation.y = 2.5;
+    model.rotation.x = 0.25;
+ 
     model.traverse(obj => {
       if (obj.isMesh) {
         obj.castShadow = false;
@@ -235,45 +317,43 @@
 </script>
 
   <script>
-    // Audio + Hint System bleibt als normales Script
-    document.getElementById('playBtn').addEventListener('click', () => {
-      const audio = document.getElementById('audio');
-      audio.play();
-    });
-
     const currentHintIndex = {
-      r1: 0,
-      r2: 0,
-      r3: 0
-    };
+          r1: 0, r2: 0, r3: 0, r4: 0, r5: 0, r6: 0, r7: 0
+        };
 
-    function showHint(group, index) {
-        currentHintIndex[group] = index;
-        document.getElementById(`${group}_${index}`).style.display = 'block';
+        function showHint(event, group, index) {
+          currentHintIndex[group] = index;
+          document.getElementById(`${group}_${index}`).style.display = 'block';
 
-        const next = document.getElementById(`${group}_${index + 1}`);
-        const btn = document.querySelector(`button[onclick="showHint('${group}', 0)"]`);
-        if (next) {
-            btn.textContent = 'Nächster Hinweis';
+          if (group === 'r3' && index === 0) {
+            document.getElementById('fragenContainer').style.display = 'block';
+          }
+
+          const next = document.getElementById(`${group}_${index + 1}`);
+          const nextNext = document.getElementById(`${group}_${index + 2}`);
+          const btn = event.target;
+
+          if (next) {
+            btn.textContent = nextNext ? 'Nächster Tipp' : 'Lösung anzeigen';
             btn.setAttribute('onclick', `nextHint('${group}')`);
-        } else {
+          } else {
             btn.disabled = true;
+          }
         }
-    }
 
-    function nextHint(group) {
-      const i = ++currentHintIndex[group];
-      const hint = document.getElementById(`${group}_${i}`);
+        function nextHint(group) {
+          const i = ++currentHintIndex[group];
+          const hint = document.getElementById(`${group}_${i}`);
 
-      if (hint) {
-          hint.style.display = 'block';
-          const next = document.getElementById(`${group}_${i + 1}`);
-          if (!next) {
+          if (hint) {
+            hint.style.display = 'block';
+            const next = document.getElementById(`${group}_${i + 1}`);
+            if (!next) {
               const btn = document.querySelector(`button[onclick="nextHint('${group}')"]`);
               if (btn) btn.disabled = true;
+            }
           }
-      }
-    }
+        }
   </script>
 </body>
 </html>
