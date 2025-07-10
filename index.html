@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Escape Game</title>
   <style>
     body, html {
@@ -44,19 +44,21 @@
       width: 700px;
     }
     .panel-top {
+      position: relative;
       padding: 1.5em 4em 2.5em 4em;
       border-radius: 23px;
       box-shadow: #8c66116e 0px 72px 120px;
     }
-    @media only screen and (max-width: 700px) {
-      .panel {
-          width: 100%;
-          padding: 1.5em;
-      }
-      .bg{
-            padding: 0 2.5em;
-            padding-bottom: 50px;
-      }
+    .panel-top::after {
+      content: "";
+      position: absolute;
+      top: -20px;
+      left: 20%;
+      transform: translateX(-50%) rotate(22deg) scale(2);
+      border-width: 0px 25px 50px 35px;
+      border-style: solid;
+      border-color: transparent transparent white transparent;
+      z-index: -1;
     }
 
     h1 {
@@ -125,11 +127,35 @@
 
     .vertical-line {
       width: 2px;
-      height: 100px;
-      background-color: black;
-      margin: 20px auto; /* zentriert horizontal */
+      height: 390px;
+      background: linear-gradient(360deg, transparent, #0000002e, transparent);
+      margin: -200px auto 20px auto;
+      z-index: -1;
     }
 
+    .horizontal-line {
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(270deg, transparent, #0000002e, transparent);
+      margin: -10px auto;
+      max-width: 900px;
+    }
+
+
+
+    @media only screen and (max-width: 700px) {
+      .panel {
+          width: 100%;
+          padding: 1.5em;
+      }
+      .bg{
+            padding: 0 2.5em;
+            padding-bottom: 50px;
+      }
+      h1 {
+        font-size: 1.5em;
+      }
+    }
 
 </style>
 <script type="importmap">
@@ -153,7 +179,8 @@
       </audio>
     </div>
     
-    <h1 style="padding-top: 140px; margin-bottom: -10px;">Tipps</h1>
+    <div class="vertical-line"></div>
+    <h1 style="margin-bottom: -10px;">Tipps</h1>
     <p style="max-width: 700px; text-align: center;">Wenn ihr nicht weiter wisst findet ihr hier hilfreiche Tipps um das Spiel zu lösen,<br> oder falls es garnicht klappt auch die Antwort.
       Viel Spaß!</p>
 
@@ -166,12 +193,16 @@
       <div class="hint solution" id="r1_3"><span>Lösung: Der Code ist • – (A) – • – • (C) • • • • (H) – (T) = 8</span></div>
     </div>
 
+    <div class="horizontal-line"></div>
+
     <div class="panel">
       <h2>Zweites Rätsel</h2>
       <button onclick="showHint(event, 'r2', 0)">Tipp anzeigen</button>
       <div class="hint" id="r2_0">Der Satz „Wenn man all das zusammenzählt“ ist nicht zufällig hervorgehoben, eine Rechenaufgabe bei der du die versteckten Rechenoperationen im Text finden musst.</div>
       <div class="hint solution" id="r2_1">(((( 2 + 1) - 7 ) + 4 ) / 4 ) + 2 = 2</div>
     </div>
+
+    <div class="horizontal-line"></div>
 
     <div class="panel">
       <h2>Drittes Rätsel</h2>
@@ -354,6 +385,16 @@
             }
           }
         }
+
+
+        let lastTouch = 0;
+        document.addEventListener('touchend', function(e) {
+          const now = new Date().getTime();
+          if (now - lastTouch <= 300) {
+            e.preventDefault(); // block double-tap zoom
+          }
+          lastTouch = now;
+        }, { passive: false });
   </script>
 </body>
 </html>
