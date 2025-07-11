@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Escape Game</title>
+  <title>Max & Rebecca Escapegame</title>
   <style>
     body, html {
       margin: 0;
@@ -47,7 +47,7 @@
       position: relative;
       padding: 1.5em 4em 2.5em 4em;
       border-radius: 23px;
-      box-shadow: #8c66116e 0px 72px 120px;
+      box-shadow: #c09351a3 0px 72px 120px;
     }
     .panel-top::after {
       content: "";
@@ -141,6 +141,64 @@
       max-width: 900px;
     }
 
+    #eqIcon {
+      display: flex;
+      gap: 2px;
+      align-items: flex-end;
+      height: 20px;
+      width: 20px;
+      margin-top: -7px;
+    }
+    #eqIcon .bar {
+      width: 3px;
+      background: white;
+      animation: eqAnim 0.8s infinite ease-in-out;
+      border-radius: 1px;
+      transform-origin: bottom;
+    }
+    #eqIcon .bar:nth-child(1) {
+      animation-delay: 0s;
+    }
+    #eqIcon .bar:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+    #eqIcon .bar:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes eqAnim {
+      0%   { height: 4px; }
+      50%  { height: 16px; }
+      100% { height: 4px; }
+    }
+
+    /* Statisch (Muted) */
+    #eqIcon.muted .bar {
+      animation: none !important;
+      height: 4px !important;
+    }
+
+    #muteBtn {
+      width: 144px;
+      height: 45px;
+      border-radius: 45px;
+      position: fixed;
+      top: 20px;
+      right: 5%;
+      padding: 0.6em 1em;
+      z-index: 20;
+    }
+
+    #muteBtn p{
+      position: absolute;
+      top: -11px;
+      left: 50px;
+      text-align: left;
+      width: 100%;
+      color: black;
+      margin-left: -13px;
+      margin-top: 23px;
+    }
 
 
     @media only screen and (max-width: 700px) {
@@ -168,6 +226,21 @@
 </script>
 </head>
 <body>
+
+  <audio id="ambientAudio" loop autoplay>
+    <source src="assets/ambient.mp3" type="audio/mpeg">
+  </audio>
+  <button id="muteBtn">
+      <div id="eqIcon">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </div>
+      <p>Ton an/aus</p>
+  </button>
+
+
+
   <canvas id="modelCanvas"></canvas>
 
   <div class="bg">
@@ -177,7 +250,7 @@
         <source src="assets/audio.mp3" type="audio/mpeg" >
         Your browser does not support the audio element.
       </audio>
-    </div>
+    </div>  
     
     <div class="vertical-line"></div>
     <h1 style="margin-bottom: -10px;">Tipps</h1>
@@ -294,6 +367,9 @@
   controls.enableZoom = false;
   controls.enablePan = false;
 
+  controls.minPolarAngle = 0.9; // untere Grenze der vertikalen Rotation (Z)
+  controls.maxPolarAngle = 1.5; // obere Grenze der vertikalen Rotation (Z)
+
   // Model laden
   let model;
   const loader = new GLTFLoader();
@@ -348,6 +424,18 @@
 </script>
 
   <script>
+    const ambientAudio = document.getElementById('ambientAudio');
+    ambientAudio.volume = 0.05;
+
+    const muteBtn = document.getElementById('muteBtn');
+    const eqIcon = document.getElementById('eqIcon');
+
+    muteBtn.addEventListener('click', () => {
+      ambientAudio.muted = !ambientAudio.muted;
+      eqIcon.classList.toggle('muted', ambientAudio.muted);
+    });
+
+
     const currentHintIndex = {
           r1: 0, r2: 0, r3: 0, r4: 0, r5: 0, r6: 0, r7: 0
         };
@@ -395,6 +483,13 @@
           }
           lastTouch = now;
         }, { passive: false });
+
+        window.addEventListener('click', () => {
+          const audio = document.getElementById('ambientAudio');
+          if (audio.paused) {
+            audio.play().catch(() => {});
+          }
+        }, { once: true });
   </script>
 </body>
 </html>
